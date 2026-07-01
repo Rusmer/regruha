@@ -2,8 +2,9 @@ export async function onRequest(context) {
   const request = context.request;
   const incomingUrl = new URL(request.url);
   const siteUrl = `${incomingUrl.protocol}//${incomingUrl.host}`;
-  const title = "Regruha";
-  const description = "Regruha";
+
+  const title = "Regruha — T-Regruha";
+  const description = "Regruha / T-Regruha — официальный сайт проекта.";
   const image = "https://raw.githubusercontent.com/Rusmer/regruha/refs/heads/1/image%20(1).png";
 
   if (incomingUrl.pathname === "/robots.txt") {
@@ -38,7 +39,7 @@ Sitemap: ${siteUrl}/sitemap.xml`;
   }
 
   const url = new URL(request.url);
-  url.hostname = "regruha-terminal-core.base44.app";
+  url.hostname = "regruha-terminal-copy-84c164d2.base44.app";
   url.searchParams.set("v", "2");
 
   const response = await fetch(url.toString(), {
@@ -52,7 +53,7 @@ Sitemap: ${siteUrl}/sitemap.xml`;
   if (!contentType.includes("text/html")) return response;
 
   const rewritten = new HTMLRewriter()
-    .on("div.base44-edit-badge", {
+    .on('link[rel="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"]', {
       element(el) {
         el.remove();
       },
@@ -60,20 +61,17 @@ Sitemap: ${siteUrl}/sitemap.xml`;
     .on("head", {
       element(el) {
         el.prepend(`
-          <style>
-            .base44-edit-badge {
-              display: none !important;
-              visibility: hidden !important;
-              opacity: 0 !important;
-              pointer-events: none !important;
-            }
-          </style>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1">
+          <title>${title}</title>
           <meta name="description" content="${description}">
-          <meta name="robots" content="index, follow">
+          <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+          <meta name="googlebot" content="index, follow">
           <link rel="canonical" href="${siteUrl}/">
-          <link rel="icon" href="${image}">
-          <link rel="shortcut icon" href="${image}">
+          <link rel="icon" type="image/png" href="${image}">
+          <link rel="shortcut icon" type="image/png" href="${image}">
           <link rel="apple-touch-icon" href="${image}">
+          <meta property="og:site_name" content="Regruha">
           <meta property="og:title" content="${title}">
           <meta property="og:description" content="${description}">
           <meta property="og:image" content="${image}">
