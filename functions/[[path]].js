@@ -11,7 +11,6 @@ export async function onRequest(context) {
     return new Response("google-site-verification: google14337db78de6911c.html", {
       headers: {
         "content-type": "text/html; charset=utf-8",
-        "cache-control": "no-store, no-cache, must-revalidate, max-age=0",
       },
     });
   }
