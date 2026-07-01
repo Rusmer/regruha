@@ -3,9 +3,9 @@ export async function onRequest(context) {
   const incomingUrl = new URL(request.url);
   const siteUrl = `${incomingUrl.protocol}//${incomingUrl.host}`;
 
-  const image = "https://github.com/Rusmer/regruha/blob/main/functions/favicon.png?raw=true";
   const title = "Regruha — T-Regruha";
   const description = "Regruha / T-Regruha — официальный сайт проекта.";
+  const image = "https://raw.githubusercontent.com/Rusmer/regruha/refs/heads/1/image%20(1).png";
 
   if (incomingUrl.pathname === "/google14337db78de6911c.html") {
     return new Response("google-site-verification: google14337db78de6911c.html", {
