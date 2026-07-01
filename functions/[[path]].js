@@ -79,7 +79,8 @@ Sitemap: ${siteUrl}/sitemap.xml`;
       element(el) {
         el.prepend(`
           <style>
-            #base44-badge {
+            #base44-badge,
+            #base44-edit-badge {
               display: none !important;
             }
           </style>
@@ -91,8 +92,8 @@ Sitemap: ${siteUrl}/sitemap.xml`;
           <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
           <meta name="googlebot" content="index, follow">
           <link rel="canonical" href="${siteUrl}/">
-          <link rel="icon" type="image/png" href="${image}">
-          <link rel="shortcut icon" type="image/png" href="${image}">
+          <link rel="icon" type="image/png" href="${image}" sizes="32x32">
+          <link rel="shortcut icon" href="${image}">
           <link rel="apple-touch-icon" href="${image}">
           <meta property="og:site_name" content="Regruha">
           <meta property="og:title" content="${title}">
