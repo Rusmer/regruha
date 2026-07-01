@@ -52,16 +52,12 @@ Sitemap: ${siteUrl}/sitemap.xml`;
   const contentType = response.headers.get("content-type") || "";
   if (!contentType.includes("text/html")) return response;
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    name: "Regruha",
-    alternateName: "T-Regruha",
-    url: siteUrl + "/",
-    description,
-  };
-
   const rewritten = new HTMLRewriter()
+    .on('link[rel="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"]', {
+      element(el) {
+        el.remove();
+      },
+    })
     .on("head", {
       element(el) {
         el.prepend(`
@@ -85,7 +81,6 @@ Sitemap: ${siteUrl}/sitemap.xml`;
           <meta name="twitter:title" content="${title}">
           <meta name="twitter:description" content="${description}">
           <meta name="twitter:image" content="${image}">
-          <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
         `, { html: true });
       },
     })
