@@ -6,6 +6,7 @@ export async function onRequest(context) {
   const title = "Regruha — T-Regruha";
   const description = "Regruha / T-Regruha — официальный сайт проекта.";
   const image = "https://raw.githubusercontent.com/Rusmer/regruha/refs/heads/1/image%20(1).png";
+  const googleVerification = "KSYbMqlfi_OJ0g91eCwd2LlhEvmkivoj_-1mufYkdXw";
 
   if (incomingUrl.pathname === "/robots.txt") {
     const body = `User-agent: *
@@ -63,6 +64,7 @@ Sitemap: ${siteUrl}/sitemap.xml`;
         el.prepend(`
           <meta charset="utf-8">
           <meta name="viewport" content="width=device-width, initial-scale=1">
+          <meta name="google-site-verification" content="${googleVerification}">
           <title>${title}</title>
           <meta name="description" content="${description}">
           <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
