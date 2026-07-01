@@ -6,7 +6,16 @@ export async function onRequest(context) {
   const title = "Regruha — T-Regruha";
   const description = "Regruha / T-Regruha — официальный сайт проекта.";
   const image = "https://raw.githubusercontent.com/Rusmer/regruha/refs/heads/1/image%20(1).png";
-  const googleVerification = "KSYbMqlfi_OJ0g91eCwd2LlhEvmkivoj_-1mufYkdXw";
+  const googleVerificationHtml = "google-site-verification: google14337db78de6911c.html";
+
+  if (incomingUrl.pathname === "/google14337db78de6911c.html") {
+    return new Response(googleVerificationHtml, {
+      headers: {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "no-store, no-cache, must-revalidate, max-age=0",
+      },
+    });
+  }
 
   if (incomingUrl.pathname === "/robots.txt") {
     const body = `User-agent: *
@@ -40,7 +49,7 @@ Sitemap: ${siteUrl}/sitemap.xml`;
   }
 
   const url = new URL(request.url);
-  url.hostname = "regruha-terminal-copy-84c164d2.base44.app";
+  url.hostname = "regruha-terminal-core.base44.app";
   url.searchParams.set("v", "2");
 
   const response = await fetch(url.toString(), {
@@ -64,7 +73,6 @@ Sitemap: ${siteUrl}/sitemap.xml`;
         el.prepend(`
           <meta charset="utf-8">
           <meta name="viewport" content="width=device-width, initial-scale=1">
-          <meta name="google-site-verification" content="${googleVerification}">
           <title>${title}</title>
           <meta name="description" content="${description}">
           <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
