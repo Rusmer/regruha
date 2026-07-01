@@ -1,4 +1,9 @@
 name: Build and deploy to GitHub Pages
+permissions:
+  contents: write      # нужно для push в ветки
+  pages: write         # нужно для управления Pages
+  id-token: write      # иногда нужно для OIDC (безвредно оставить)
+
 on:
   push:
     branches:
@@ -10,6 +15,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
 
       - name: Use Node.js
         uses: actions/setup-node@v4
