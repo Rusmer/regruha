@@ -1,0 +1,100 @@
+@import url('https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;700;900&family=JetBrains+Mono:wght@300;400;500;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 2%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 4%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 4%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 262 95% 55%;
+    --primary-foreground: 0 0% 2%;
+    --secondary: 0 0% 10%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 10%;
+    --muted-foreground: 240 4% 64%;
+    --accent: 262 95% 55%;
+    --accent-foreground: 0 0% 2%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 12%;
+    --input: 0 0% 12%;
+    --ring: 262 95% 55%;
+    --radius: 0.25rem;
+    --font-heading: 'Schibsted Grotesk', system-ui, sans-serif;
+    --font-body: 'JetBrains Mono', ui-monospace, monospace;
+    --font-display: 'Schibsted Grotesk', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+    background-color: #050505;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Solar palette helpers */
+.text-gold { color: rgb(99, 27, 255); }
+.bg-gold { background-color: rgb(99, 27, 255); }
+.border-gold { border-color: rgb(99, 27, 255); }
+.text-zinc-data { color: #A1A1AA; }
+.obsidian-edge { border-color: #1E1E1E; }
+
+/* The Matrix Grid — faint technical HUD */
+.matrix-grid {
+  background-image:
+    linear-gradient(rgba(99, 27, 255, 0.035) 0.5px, transparent 0.5px),
+    linear-gradient(90deg, rgba(99, 27, 255, 0.035) 0.5px, transparent 0.5px);
+  background-size: 56px 56px;
+}
+
+/* Frosted obsidian glass */
+.obsidian-glass {
+  background: rgba(10, 10, 10, 0.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid #1E1E1E;
+}
+
+/* Pulse for live action button */
+@keyframes solar-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(99, 27, 255, 0.5); }
+  50% { box-shadow: 0 0 0 14px rgba(99, 27, 255, 0); }
+}
+.solar-pulse { animation: solar-pulse 2.2s infinite; }
+
+/* Marquee */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.marquee-track {
+  display: inline-flex;
+  animation: marquee 28s linear infinite;
+  white-space: nowrap;
+}
+
+/* Custom reticle cursor on desktop */
+@media (pointer: fine) {
+  .reticle-host { cursor: none; }
+}
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #050505; }
+::-webkit-scrollbar-thumb { background: #1E1E1E; }
+::-webkit-scrollbar-thumb:hover { background: rgb(99, 27, 255); }
+
+::selection { background: rgb(99, 27, 255); color: #fff; }
