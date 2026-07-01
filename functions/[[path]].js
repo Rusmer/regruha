@@ -52,9 +52,22 @@ Sitemap: ${siteUrl}/sitemap.xml`;
   if (!contentType.includes("text/html")) return response;
 
   const rewritten = new HTMLRewriter()
+    .on("div.base44-edit-badge", {
+      element(el) {
+        el.remove();
+      },
+    })
     .on("head", {
       element(el) {
         el.prepend(`
+          <style>
+            .base44-edit-badge {
+              display: none !important;
+              visibility: hidden !important;
+              opacity: 0 !important;
+              pointer-events: none !important;
+            }
+          </style>
           <meta name="description" content="${description}">
           <meta name="robots" content="index, follow">
           <link rel="canonical" href="${siteUrl}/">
