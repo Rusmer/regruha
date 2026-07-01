@@ -3,15 +3,14 @@ export async function onRequest(context) {
   const incomingUrl = new URL(request.url);
   const siteUrl = `${incomingUrl.protocol}//${incomingUrl.host}`;
 
+  const image = "/image%20(1).png";
   const title = "Regruha — T-Regruha";
   const description = "Regruha / T-Regruha — официальный сайт проекта.";
-  const image = "https://raw.githubusercontent.com/Rusmer/regruha/refs/heads/1/image%20(1).png";
 
   if (incomingUrl.pathname === "/google14337db78de6911c.html") {
     return new Response("google-site-verification: google14337db78de6911c.html", {
       headers: {
         "content-type": "text/html; charset=utf-8",
-        "cache-control": "no-store, no-cache, must-revalidate, max-age=0",
       },
     });
   }
@@ -48,7 +47,7 @@ Sitemap: ${siteUrl}/sitemap.xml`;
   }
 
   const url = new URL(request.url);
-  url.hostname = "regruha-terminal-copy-84c164d2.base44.app";
+  url.hostname = "regruha-terminal-core.base44.app";
   url.searchParams.set("v", "2");
 
   const response = await fetch(url.toString(), {
@@ -79,6 +78,11 @@ Sitemap: ${siteUrl}/sitemap.xml`;
     .on("head", {
       element(el) {
         el.prepend(`
+          <style>
+            #base44-badge {
+              display: none !important;
+            }
+          </style>
           <meta charset="utf-8">
           <meta name="viewport" content="width=device-width, initial-scale=1">
           <meta name="google-site-verification" content="google14337db78de6911c.html">
