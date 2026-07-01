@@ -3,7 +3,7 @@ export async function onRequest(context) {
   const incomingUrl = new URL(request.url);
   const siteUrl = `${incomingUrl.protocol}//${incomingUrl.host}`;
 
-  const image = "/image%20(1).png";
+  const image = "/favicon.png";
   const title = "Regruha — T-Regruha";
   const description = "Regruha / T-Regruha — официальный сайт проекта.";
 
