@@ -2,8 +2,9 @@ export async function onRequest(context) {
   const request = context.request;
   const incomingUrl = new URL(request.url);
   const siteUrl = `${incomingUrl.protocol}//${incomingUrl.host}`;
-  const title = "Regruha";
-  const description = "Regruha";
+
+  const title = "Regruha — T-Regruha";
+  const description = "Regruha / T-Regruha — официальный сайт проекта.";
   const image = "https://raw.githubusercontent.com/Rusmer/regruha/refs/heads/1/image%20(1).png";
 
   if (incomingUrl.pathname === "/robots.txt") {
@@ -51,16 +52,30 @@ Sitemap: ${siteUrl}/sitemap.xml`;
   const contentType = response.headers.get("content-type") || "";
   if (!contentType.includes("text/html")) return response;
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "Regruha",
+    alternateName: "T-Regruha",
+    url: siteUrl + "/",
+    description,
+  };
+
   const rewritten = new HTMLRewriter()
     .on("head", {
       element(el) {
         el.prepend(`
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1">
+          <title>${title}</title>
           <meta name="description" content="${description}">
-          <meta name="robots" content="index, follow">
+          <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+          <meta name="googlebot" content="index, follow">
           <link rel="canonical" href="${siteUrl}/">
-          <link rel="icon" href="${image}">
-          <link rel="shortcut icon" href="${image}">
+          <link rel="icon" type="image/png" href="${image}">
+          <link rel="shortcut icon" type="image/png" href="${image}">
           <link rel="apple-touch-icon" href="${image}">
+          <meta property="og:site_name" content="Regruha">
           <meta property="og:title" content="${title}">
           <meta property="og:description" content="${description}">
           <meta property="og:image" content="${image}">
@@ -70,6 +85,7 @@ Sitemap: ${siteUrl}/sitemap.xml`;
           <meta name="twitter:title" content="${title}">
           <meta name="twitter:description" content="${description}">
           <meta name="twitter:image" content="${image}">
+          <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
         `, { html: true });
       },
     })
