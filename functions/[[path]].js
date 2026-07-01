@@ -6,10 +6,9 @@ export async function onRequest(context) {
   const title = "Regruha — T-Regruha";
   const description = "Regruha / T-Regruha — официальный сайт проекта.";
   const image = "https://raw.githubusercontent.com/Rusmer/regruha/refs/heads/1/image%20(1).png";
-  const googleVerificationHtml = "google-site-verification: google14337db78de6911c.html";
 
   if (incomingUrl.pathname === "/google14337db78de6911c.html") {
-    return new Response(googleVerificationHtml, {
+    return new Response("google-site-verification: google14337db78de6911c.html", {
       headers: {
         "content-type": "text/html; charset=utf-8",
         "cache-control": "no-store, no-cache, must-revalidate, max-age=0",
@@ -62,6 +61,15 @@ Sitemap: ${siteUrl}/sitemap.xml`;
   const contentType = response.headers.get("content-type") || "";
   if (!contentType.includes("text/html")) return response;
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "Regruha",
+    alternateName: "T-Regruha",
+    url: `${siteUrl}/`,
+    description,
+  };
+
   const rewritten = new HTMLRewriter()
     .on('link[rel="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"]', {
       element(el) {
@@ -73,6 +81,7 @@ Sitemap: ${siteUrl}/sitemap.xml`;
         el.prepend(`
           <meta charset="utf-8">
           <meta name="viewport" content="width=device-width, initial-scale=1">
+          <meta name="google-site-verification" content="google14337db78de6911c.html">
           <title>${title}</title>
           <meta name="description" content="${description}">
           <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
@@ -91,6 +100,7 @@ Sitemap: ${siteUrl}/sitemap.xml`;
           <meta name="twitter:title" content="${title}">
           <meta name="twitter:description" content="${description}">
           <meta name="twitter:image" content="${image}">
+          <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
         `, { html: true });
       },
     })
