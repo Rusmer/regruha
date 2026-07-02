@@ -24,7 +24,6 @@ Sitemap: ${siteUrl}/sitemap.xml`;
     return new Response(body, {
       headers: {
         "content-type": "text/plain; charset=utf-8",
-        "cache-control": "public, max-age=0, must-revalidate",
       },
     });
   }
@@ -41,7 +40,6 @@ Sitemap: ${siteUrl}/sitemap.xml`;
     return new Response(body, {
       headers: {
         "content-type": "application/xml; charset=utf-8",
-        "cache-control": "public, max-age=0, must-revalidate",
       },
     });
   }
@@ -118,9 +116,6 @@ Sitemap: ${siteUrl}/sitemap.xml`;
     .transform(response);
 
   const newHeaders = new Headers(rewritten.headers);
-  newHeaders.set("cache-control", "public, max-age=0, must-revalidate");
-  newHeaders.delete("pragma");
-  newHeaders.delete("expires");
   newHeaders.delete("x-robots-tag");
 
 
