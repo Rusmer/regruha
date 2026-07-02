@@ -61,10 +61,6 @@ Sitemap: ${siteUrl}/sitemap.xml`;
     body: request.method === "GET" || request.method === "HEAD" ? null : await request.clone().text(),
     redirect: "follow",
   });
-
-  const contentType = response.headers.get("content-type") || "";
-  if (!contentType.includes("text/html")) return response;
-
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebSite",
@@ -126,6 +122,12 @@ Sitemap: ${siteUrl}/sitemap.xml`;
   newHeaders.set("pragma", "no-cache");
   newHeaders.set("expires", "0");
   newHeaders.delete("x-robots-tag");
+
+  // --- Разрешаем встраивание сайта в iframe ---
+  newHeaders.delete("x-frame-options");
+  newHeaders.delete("content-security-policy"); // убираем, если апстрим прислал свою CSP с frame-ancestors
+  newHeaders.set("content-security-policy", "frame-ancestors *;");
+  // ---------------------------------------------
 
   return new Response(rewritten.body, {
     status: rewritten.status,
