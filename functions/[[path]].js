@@ -13,7 +13,7 @@ export async function onRequest(context) {
   ) {
     const targetUrl = new URL(request.url);
     targetUrl.hostname = "regruha-terminal-core.base44.app";
-    return Response.redirect(targetUrl.toString(), 301);
+    return Response.redirect(targetUrl.toString(), 302);
   }
 
   if (incomingUrl.pathname === "/google14337db78de6911c.html") {
