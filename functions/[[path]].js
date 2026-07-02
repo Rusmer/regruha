@@ -46,6 +46,11 @@ Sitemap: ${siteUrl}/sitemap.xml`;
     });
   }
 
+  // Исключение: пути /api/apps/... не проксируем через подмену hostname
+  if (incomingUrl.pathname.startsWith("/api/apps/")) {
+    return fetch(request);
+  }
+
   const url = new URL(request.url);
   url.hostname = "regruha-terminal-core.base44.app";
   url.searchParams.set("v", "2");
