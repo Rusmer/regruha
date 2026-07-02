@@ -48,8 +48,9 @@ Sitemap: ${siteUrl}/sitemap.xml`;
 
   const url = new URL(request.url);
 
-  if (url.hostname === "regruha.pages.dev" && url.pathname.startsWith("/api/")) {
+  if (url.hostname === "regruha.pages.dev" && url.pathname.startsWith("/api/api/")) {
     url.hostname = "regruha-terminal-core.base44.app";
+    url.pathname = url.pathname.replace("/api/api/", "/api/");
   }
 
   url.searchParams.set("v", "2");
