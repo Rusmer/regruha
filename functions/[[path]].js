@@ -9,7 +9,7 @@ export async function onRequest(context) {
 
   if (
     incomingUrl.hostname === "regruha.pages.dev" &&
-    incomingUrl.pathname.startsWith("/api/apps/6a4429aec4d8855c752ea6b7/entities")
+    incomingUrl.pathname.startsWith("/api/apps/6a4429aec4d8855c752ea6b7/entities/")
   ) {
     const targetUrl = new URL(request.url);
     targetUrl.hostname = "regruha-terminal-core.base44.app";
