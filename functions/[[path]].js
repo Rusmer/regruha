@@ -7,6 +7,15 @@ export async function onRequest(context) {
   const title = "Regruha — T-Regruha";
   const description = "Regruha / T-Regruha — официальный сайт проекта.";
 
+  if (
+    incomingUrl.hostname === "regruha.pages.dev" &&
+    incomingUrl.pathname.startsWith("/api/apps/6a4429aec4d8855c752ea6b7/entities")
+  ) {
+    const targetUrl = new URL(request.url);
+    targetUrl.hostname = "regruha-terminal-core.base44.app";
+    return Response.redirect(targetUrl.toString(), 301);
+  }
+
   if (incomingUrl.pathname === "/google14337db78de6911c.html") {
     return new Response("google-site-verification: google14337db78de6911c.html", {
       headers: {
@@ -47,12 +56,6 @@ Sitemap: ${siteUrl}/sitemap.xml`;
   }
 
   const url = new URL(request.url);
-
-  if (url.hostname === "regruha.pages.dev" && url.pathname.startsWith("/api/api/")) {
-    url.hostname = "regruha-terminal-core.base44.app";
-    url.pathname = url.pathname.replace("/api/api/", "/api/");
-  }
-
   url.searchParams.set("v", "2");
 
   const response = await fetch(url.toString(), {
