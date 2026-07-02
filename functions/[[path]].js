@@ -71,7 +71,12 @@ Sitemap: ${siteUrl}/sitemap.xml`;
   };
 
   const rewritten = new HTMLRewriter()
-    .on('link[rel="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"]', {
+    .on('link[rel="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"], link[rel="canonical"], meta[name="description"]', {
+      element(el) {
+        el.remove();
+      },
+    })
+    .on("title", {
       element(el) {
         el.remove();
       },
@@ -108,11 +113,6 @@ Sitemap: ${siteUrl}/sitemap.xml`;
           <meta name="twitter:image" content="${image}">
           <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
         `, { html: true });
-      },
-    })
-    .on("title", {
-      element(el) {
-        el.setInnerContent(title, { html: false });
       },
     })
     .transform(response);
