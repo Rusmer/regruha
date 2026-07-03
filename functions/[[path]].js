@@ -59,6 +59,7 @@ Sitemap: ${siteUrl}/sitemap.xml`;
     body: request.method === "GET" || request.method === "HEAD" ? null : await request.clone().text(),
     redirect: "follow",
   });
+  
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebSite",
@@ -87,7 +88,45 @@ Sitemap: ${siteUrl}/sitemap.xml`;
             #base44-edit-badge {
               display: none !important;
             }
+
+            /* Скрываем кнопку Google и разделитель "or" через CSS */
+            button:has(svg path[fill="#4285F4"]),
+            div.uppercase:has(span) {
+              display: none !important;
+              opacity: 0 !important;
+              visibility: hidden !important;
+              pointer-events: none !important;
+              height: 0 !important;
+              margin: 0 !important;
+              padding: 0 !important;
+            }
           </style>
+
+          <script>
+            // Дополнительно скрываем через JS, если элементы рендерятся фреймворком динамически
+            (function() {
+              const hideElements = () => {
+                document.querySelectorAll('button').forEach(btn => {
+                  if (btn.textContent && btn.textContent.includes('Continue with Google')) {
+                    btn.style.setProperty('display', 'none', 'important');
+                  }
+                });
+                document.querySelectorAll('div.uppercase span').forEach(span => {
+                  if (span.textContent && span.textContent.trim() === 'or') {
+                    const parentDiv = span.closest('div.relative');
+                    if (parentDiv) parentDiv.style.setProperty('display', 'none', 'important');
+                  }
+                });
+              };
+
+              hideElements();
+              new MutationObserver(hideElements).observe(document.documentElement, { 
+                childList: true, 
+                subtree: true 
+              });
+            })();
+          </script>
+
           <meta charset="utf-8">
           <meta name="viewport" content="width=device-width, initial-scale=1">
           <meta name="google-site-verification" content="google14337db78de6911c.html">
@@ -117,12 +156,9 @@ Sitemap: ${siteUrl}/sitemap.xml`;
 
   const newHeaders = new Headers(rewritten.headers);
   newHeaders.delete("x-robots-tag");
-
-
   newHeaders.delete("x-frame-options");
   newHeaders.delete("content-security-policy");
   newHeaders.set("content-security-policy", "frame-ancestors *;");
-
 
   return new Response(rewritten.body, {
     status: rewritten.status,
