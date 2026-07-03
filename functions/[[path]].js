@@ -45,7 +45,7 @@ Sitemap: ${siteUrl}/sitemap.xml`;
   }
 
   // Исключение: пути /api/apps/... не проксируем через подмену hostname
-  if (incomingUrl.pathname.startsWith("/api/apps/")) {
+  if (incomingUrl.pathname.startsWith("/api/")) {
     return fetch(request);
   }
 
