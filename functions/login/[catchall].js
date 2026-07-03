@@ -16,24 +16,14 @@ export async function onRequest(context) {
         el.prepend(`
           <style>
             #base44-badge,
-            #base44-edit-badge {
+            #base44-edit-badge,
+            button.w-full.h-12.mb-6,
+            div.relative.flex.justify-center.text-xs.uppercase {
               display: none !important;
             }
           </style>
         `, { html: true });
       },
-    })
-    /* 1. Удаляем кнопку Google */
-    .on("button.w-full.h-12.mb-6", {
-      element(el) {
-        el.remove();
-      }
-    })
-    /* 2. Удаляем разделитель "or" */
-    .on("div.relative.flex.justify-center.text-xs.uppercase", {
-      element(el) {
-        el.remove();
-      }
     })
     .transform(res);
 }
