@@ -7,7 +7,7 @@ export async function onRequest(context) {
     method: request.method,
     headers: request.headers,
     body: request.method === "GET" || request.method === "HEAD" ? null : await request.clone().text(),
-    redirect: "follow",
+    redirect: "manual",
   });
 
   return new HTMLRewriter()
