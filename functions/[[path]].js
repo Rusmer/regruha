@@ -59,7 +59,7 @@ Sitemap: ${siteUrl}/sitemap.xml`;
     body: request.method === "GET" || request.method === "HEAD" ? null : await request.clone().text(),
     redirect: "follow",
   });
-  
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebSite",
@@ -78,6 +78,21 @@ Sitemap: ${siteUrl}/sitemap.xml`;
     .on("title", {
       element(el) {
         el.remove();
+      },
+    })
+    .on("textarea", {
+      element(el) {
+        const placeholder = el.getAttribute("placeholder");
+        if (placeholder && placeholder.includes("Напишите ответ...")) {
+          el.setAttribute("placeholder", "Напишите ответ...");
+        }
+      },
+    })
+    .on('span.font-mono.text-\\[10px\\].tracking-widest.text-gold', {
+      element(el) {
+        if (el.textContent.includes("// ОТВЕТИТЬ (поддерживается Markdown)")) {
+          el.setInnerContent("// ОТВЕТИТЬ)");
+        }
       },
     })
     .on("head", {
