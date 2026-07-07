@@ -150,13 +150,13 @@ Sitemap: ${siteUrl}/sitemap.xml`;
 
                 document.querySelectorAll('div.min-w-0 > div.font-mono.text-\\\\[9px\\\\].tracking-widest.text-zinc-data').forEach(el => {
                   if (el.textContent && el.textContent.trim() === 'РЕЙТИНГ') {
-                    el.textContent = 'РЕЙТИНГ METACRITIC';
+                    el.textContent = 'ОЦЕНКА METACRITIC';
                   }
                 });
 
                 document.querySelectorAll('label.font-mono.text-\\\\[9px\\\\].tracking-widest.text-zinc-data.block.mb-1').forEach(el => {
                   if (el.textContent && el.textContent.trim() === 'РЕЙТИНГ') {
-                    el.textContent = 'РЕЙТИНГ METACRITIC';
+                    el.textContent = 'ОЦЕНКА METACRITIC';
                   }
                 });
 
