@@ -105,6 +105,13 @@ Sitemap: ${siteUrl}/sitemap.xml`;
         }
       },
     })
+    .on('div.absolute.top-0.right-0.bg-gold.text-\\[\\#050505\\].font-mono.text-\\[10px\\].font-bold.tracking-widest.px-3.py-1.z-20', {
+      element(el) {
+        if (el.textContent?.trim() === "ОЖИДАЕМЫЙ РЕЛИЗ") {
+          el.setInnerContent("ИЗБРАННОЕ");
+        }
+      },
+    })
     .on('input[placeholder="PEGI 18 / 18+"]', {
       element(el) {
         el.setAttribute("placeholder", "7.2/10");
@@ -157,6 +164,12 @@ Sitemap: ${siteUrl}/sitemap.xml`;
                 document.querySelectorAll('label.font-mono.text-\\\\[9px\\\\].tracking-widest.text-zinc-data.block.mb-1').forEach(el => {
                   if (el.textContent && el.textContent.trim() === 'РЕЙТИНГ') {
                     el.textContent = 'ОЦЕНКА METACRITIC';
+                  }
+                });
+
+                document.querySelectorAll('div.absolute.top-0.right-0.bg-gold.text-\\\\[\\\\#050505\\\\].font-mono.text-\\\\[10px\\\\].font-bold.tracking-widest.px-3.py-1.z-20').forEach(el => {
+                  if (el.textContent && el.textContent.trim() === 'ОЖИДАЕМЫЙ РЕЛИЗ') {
+                    el.textContent = 'ИЗБРАННОЕ';
                   }
                 });
 
