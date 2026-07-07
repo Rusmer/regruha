@@ -81,10 +81,7 @@ Sitemap: ${siteUrl}/sitemap.xml`;
     })
     .on("textarea", {
       element(el) {
-        const placeholder = el.getAttribute("placeholder");
-        if (placeholder && placeholder.includes("Напишите ответ...")) {
-          el.setAttribute("placeholder", "Напишите ответ...");
-        }
+        el.setAttribute("placeholder", "Напишите ответ...");
       },
     })
     .on('span.font-mono.text-\\[10px\\].tracking-widest.text-gold', {
