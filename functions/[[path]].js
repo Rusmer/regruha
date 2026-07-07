@@ -105,13 +105,6 @@ Sitemap: ${siteUrl}/sitemap.xml`;
         }
       },
     })
-    .on('div.absolute.top-0.right-0.bg-gold.text-\\[\\#050505\\].font-mono.text-\\[10px\\].font-bold.tracking-widest.px-3.py-1.z-20', {
-      element(el) {
-        if (el.textContent?.trim() === "ОЖИДАЕМЫЙ РЕЛИЗ") {
-          el.setInnerContent("ИЗБРАННОЕ");
-        }
-      },
-    })
     .on('input[placeholder="PEGI 18 / 18+"]', {
       element(el) {
         el.setAttribute("placeholder", "7.2/10");
@@ -120,25 +113,6 @@ Sitemap: ${siteUrl}/sitemap.xml`;
     .on("head", {
       element(el) {
         el.prepend(`
-          <style>
-            #base44-badge,
-            #base44-edit-badge {
-              display: none !important;
-            }
-
-            /* Скрываем кнопку Google и разделитель "or" через CSS */
-            button:has(svg path[fill="#4285F4"]),
-            div.uppercase:has(span) {
-              display: none !important;
-              opacity: 0 !important;
-              visibility: hidden !important;
-              pointer-events: none !important;
-              height: 0 !important;
-              margin: 0 !important;
-              padding: 0 !important;
-            }
-          </style>
-
           <script>
             (function() {
               const hideElements = () => {
@@ -189,6 +163,24 @@ Sitemap: ${siteUrl}/sitemap.xml`;
               });
             })();
           </script>
+
+          <style>
+            #base44-badge,
+            #base44-edit-badge {
+              display: none !important;
+            }
+
+            button:has(svg path[fill="#4285F4"]),
+            div.uppercase:has(span) {
+              display: none !important;
+              opacity: 0 !important;
+              visibility: hidden !important;
+              pointer-events: none !important;
+              height: 0 !important;
+              margin: 0 !important;
+              padding: 0 !important;
+            }
+          </style>
 
           <meta charset="utf-8">
           <meta name="viewport" content="width=device-width, initial-scale=1">
