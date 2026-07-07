@@ -91,6 +91,25 @@ Sitemap: ${siteUrl}/sitemap.xml`;
         }
       },
     })
+    .on('div.min-w-0 > div.font-mono.text-\\[9px\\].tracking-widest.text-zinc-data', {
+      element(el) {
+        if (el.textContent?.trim() === "РЕЙТИНГ") {
+          el.setInnerContent("РЕЙТИНГ METACRITIC");
+        }
+      },
+    })
+    .on('label.font-mono.text-\\[9px\\].tracking-widest.text-zinc-data.block.mb-1', {
+      element(el) {
+        if (el.textContent?.trim() === "РЕЙТИНГ") {
+          el.setInnerContent("РЕЙТИНГ METACRITIC");
+        }
+      },
+    })
+    .on('input[placeholder="PEGI 18 / 18+"]', {
+      element(el) {
+        el.setAttribute("placeholder", "7.2/10");
+      },
+    })
     .on("head", {
       element(el) {
         el.prepend(`
@@ -100,6 +119,7 @@ Sitemap: ${siteUrl}/sitemap.xml`;
               display: none !important;
             }
 
+            /* Скрываем кнопку Google и разделитель "or" через CSS */
             button:has(svg path[fill="#4285F4"]),
             div.uppercase:has(span) {
               display: none !important;
@@ -120,6 +140,7 @@ Sitemap: ${siteUrl}/sitemap.xml`;
                     btn.style.setProperty('display', 'none', 'important');
                   }
                 });
+
                 document.querySelectorAll('div.uppercase span').forEach(span => {
                   if (span.textContent && span.textContent.trim() === 'or') {
                     const parentDiv = span.closest('div.relative');
@@ -127,10 +148,24 @@ Sitemap: ${siteUrl}/sitemap.xml`;
                   }
                 });
 
-                document.querySelectorAll('div.font-mono.text-\\\\[9px\\\\].tracking-widest.text-zinc-data').forEach(el => {
+                document.querySelectorAll('div.min-w-0 > div.font-mono.text-\\\\[9px\\\\].tracking-widest.text-zinc-data').forEach(el => {
                   if (el.textContent && el.textContent.trim() === 'РЕЙТИНГ') {
                     el.textContent = 'РЕЙТИНГ METACRITIC';
                   }
+                });
+
+                document.querySelectorAll('label.font-mono.text-\\\\[9px\\\\].tracking-widest.text-zinc-data.block.mb-1').forEach(el => {
+                  if (el.textContent && el.textContent.trim() === 'РЕЙТИНГ') {
+                    el.textContent = 'РЕЙТИНГ METACRITIC';
+                  }
+                });
+
+                document.querySelectorAll('textarea').forEach(el => {
+                  el.setAttribute('placeholder', 'Напишите ответ...');
+                });
+
+                document.querySelectorAll('input[placeholder="PEGI 18 / 18+"]').forEach(el => {
+                  el.setAttribute('placeholder', '7.2/10');
                 });
               };
 
