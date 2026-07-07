@@ -94,14 +94,14 @@ Sitemap: ${siteUrl}/sitemap.xml`;
     .on('div.min-w-0 > div.font-mono.text-\\[9px\\].tracking-widest.text-zinc-data', {
       element(el) {
         if (el.textContent?.trim() === "РЕЙТИНГ") {
-          el.setInnerContent("РЕЙТИНГ METACRITIC");
+          el.setInnerContent("ОЦЕНКА METACRITIC");
         }
       },
     })
     .on('label.font-mono.text-\\[9px\\].tracking-widest.text-zinc-data.block.mb-1', {
       element(el) {
         if (el.textContent?.trim() === "РЕЙТИНГ") {
-          el.setInnerContent("РЕЙТИНГ METACRITIC");
+          el.setInnerContent("ОЦЕНКА METACRITIC");
         }
       },
     })
