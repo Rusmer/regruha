@@ -94,9 +94,9 @@ Sitemap: ${siteUrl}/sitemap.xml`;
         }
       },
     })
-    .on('div.font-mono.text-\\[9px\\].tracking-widest.text-zinc-data', {
+    .on('div.min-w-0 > div.font-mono.text-\\[9px\\].tracking-widest.text-zinc-data', {
       element(el) {
-        if (el.textContent.includes("РЕЙТИНГ")) {
+        if (el.textContent?.trim() === "РЕЙТИНГ") {
           el.setInnerContent("РЕЙТИНГ METACRITIC");
         }
       },
