@@ -94,13 +94,6 @@ Sitemap: ${siteUrl}/sitemap.xml`;
         }
       },
     })
-    .on('div.min-w-0 > div.font-mono.text-\\[9px\\].tracking-widest.text-zinc-data', {
-      element(el) {
-        if (el.textContent?.trim() === "РЕЙТИНГ") {
-          el.setInnerContent("РЕЙТИНГ METACRITIC");
-        }
-      },
-    })
     .on("head", {
       element(el) {
         el.prepend(`
@@ -136,12 +129,18 @@ Sitemap: ${siteUrl}/sitemap.xml`;
                     if (parentDiv) parentDiv.style.setProperty('display', 'none', 'important');
                   }
                 });
+
+                document.querySelectorAll('div.font-mono.text-\\\\[9px\\\\].tracking-widest.text-zinc-data').forEach(el => {
+                  if (el.textContent && el.textContent.trim() === 'РЕЙТИНГ') {
+                    el.textContent = 'РЕЙТИНГ METACRITIC';
+                  }
+                });
               };
 
               hideElements();
-              new MutationObserver(hideElements).observe(document.documentElement, { 
-                childList: true, 
-                subtree: true 
+              new MutationObserver(hideElements).observe(document.documentElement, {
+                childList: true,
+                subtree: true
               });
             })();
           </script>
