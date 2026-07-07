@@ -44,7 +44,6 @@ Sitemap: ${siteUrl}/sitemap.xml`;
     });
   }
 
-  // Исключение: пути /api/apps/... не проксируем через подмену hostname
   if (incomingUrl.pathname.startsWith("/api/")) {
     return fetch(request);
   }
@@ -95,6 +94,13 @@ Sitemap: ${siteUrl}/sitemap.xml`;
         }
       },
     })
+    .on('div.font-mono.text-\\[9px\\].tracking-widest.text-zinc-data', {
+      element(el) {
+        if (el.textContent.includes("РЕЙТИНГ")) {
+          el.setInnerContent("РЕЙТИНГ METACRITIC");
+        }
+      },
+    })
     .on("head", {
       element(el) {
         el.prepend(`
@@ -104,7 +110,6 @@ Sitemap: ${siteUrl}/sitemap.xml`;
               display: none !important;
             }
 
-            /* Скрываем кнопку Google и разделитель "or" через CSS */
             button:has(svg path[fill="#4285F4"]),
             div.uppercase:has(span) {
               display: none !important;
@@ -118,7 +123,6 @@ Sitemap: ${siteUrl}/sitemap.xml`;
           </style>
 
           <script>
-            // Дополнительно скрываем через JS, если элементы рендерятся фреймворком динамически
             (function() {
               const hideElements = () => {
                 document.querySelectorAll('button').forEach(btn => {
