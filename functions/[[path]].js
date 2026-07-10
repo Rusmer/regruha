@@ -1,5 +1,16 @@
 export async function onRequest(context) {
   const request = context.request;
+
+  // Редирект пользователей из России и Беларуси на зеркало Vercel
+  const country = request.headers.get("CF-IPCountry");
+
+  if (country === "RU" || country === "BY") {
+    const redirectUrl = new URL(request.url);
+    redirectUrl.hostname = "regruha.vercel.app";
+
+    return Response.redirect(redirectUrl.toString(), 302);
+  }
+
   const incomingUrl = new URL(request.url);
   const siteUrl = `${incomingUrl.protocol}//${incomingUrl.host}`;
 
