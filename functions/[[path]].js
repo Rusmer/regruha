@@ -121,57 +121,16 @@ Sitemap: ${siteUrl}/sitemap.xml`;
         el.setAttribute("placeholder", "7.2/10");
       },
     })
+    .on("*", {
+      text(text) {
+        if (text.text.includes("Regruha")) {
+          return text.text.replace(/Regruha/g, "Reeeeeeegruha");
+        }
+      },
+    })
     .on("head", {
       element(el) {
         el.prepend(`
-          <script>
-            (function() {
-              function replaceRegruha() {
-                // Заменяем во всех текстовых узлах
-                const walk = document.createTreeWalker(
-                  document.documentElement,
-                  NodeFilter.SHOW_TEXT,
-                  null,
-                  false
-                );
-
-                let node;
-                const nodesToUpdate = [];
-                
-                while (node = walk.nextNode()) {
-                  if (node.nodeValue && node.nodeValue.includes('Regruha')) {
-                    nodesToUpdate.push(node);
-                  }
-                }
-
-                nodesToUpdate.forEach(node => {
-                  node.nodeValue = node.nodeValue.replace(/Regruha/g, 'Reeeeeeegruha');
-                });
-
-                console.log('Replaced ' + nodesToUpdate.length + ' nodes');
-              }
-
-              // Выполняем сразу после загрузки DOM
-              if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', replaceRegruha);
-              } else {
-                replaceRegruha();
-              }
-
-              // И наблюдаем за новым контентом
-              const observer = new MutationObserver(() => {
-                setTimeout(replaceRegruha, 100);
-              });
-
-              observer.observe(document.documentElement, {
-                childList: true,
-                subtree: true
-              });
-
-              console.log('April Fools script loaded');
-            })();
-          </script>
-
           <style>
             #base44-badge,
             #base44-edit-badge {
@@ -229,3 +188,8 @@ Sitemap: ${siteUrl}/sitemap.xml`;
     headers: newHeaders,
   });
 }
+```**Изменения:**
+- Добавил `.on("*")` с функцией `text()` — она перехватывает все текстовые узлы на странице и заменяет их **на сервере**
+- Удалил клиентский скрипт, так как серверный подход работает на уровне HTML
+
+Это должно сработать! Попробуй и дай знать.
