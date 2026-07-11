@@ -59,78 +59,88 @@ export async function onRequest(context) {
   const aprilFoolsScript = `
     <script>
       (function() {
-        console.log("April Fools script loaded v3");
+        console.log("April Fools script loaded v4 - DEEP SCAN");
         
-        function replaceInElement(el) {
-          // Замена в текстовых узлах
-          for (let child of el.childNodes) {
-            if (child.nodeType === 3) { // TEXT_NODE
-              if (child.textContent.includes("Regruha")) {
-                console.log("Found text:", child.textContent);
-                child.textContent = child.textContent.replace(/Regruha/g, "Reeeeeeegruha");
-                console.log("Replaced to:", child.textContent);
-              }
-            } else if (child.nodeType === 1) { // ELEMENT_NODE
-              replaceInElement(child);
-              
-              // Замена в атрибутах
-              for (let attr of child.attributes || []) {
-                if (attr.value.includes("Regruha")) {
-                  console.log("Found in attr " + attr.name + ":", attr.value);
-                  attr.value = attr.value.replace(/Regruha/g, "Reeeeeeegruha");
-                }
+        function deepScan() {
+          console.log("=== DEEP SCAN ===");
+          
+          // 1. Проверяем атрибуты
+          const allElements = document.querySelectorAll("*");
+          let foundInAttrs = false;
+          allElements.forEach(el => {
+            for (let attr of el.attributes) {
+              if (attr.value.includes("Regruha")) {
+                console.log("FOUND IN ATTR:", attr.name, "=", attr.value, "in", el.tagName, el.className);
+                foundInAttrs = true;
               }
             }
-          }
-        }
-        
-        function scan() {
-          console.log("Scanning...");
+          });
+          
+          // 2. Проверяем innerHTML
           const bodyHTML = document.body.innerHTML;
-          if (bodyHTML.includes("Regruha")) {
-            console.log("Text 'Regruha' found in HTML!");
-            replaceInElement(document.body);
-          } else {
-            console.log("No 'Regruha' found in current DOM");
+          console.log("Body innerHTML includes 'Regruha'?", bodyHTML.includes("Regruha"));
+          
+          // 3. Ищем все текстовые узлы вручную
+          function findAllText(node, depth = 0) {
+            if (node.nodeType === 3 && node.textContent.trim()) {
+              if (node.textContent.includes("Regruha")) {
+                console.log("FOUND TEXT NODE:", node.textContent.substring(0, 100));
+              }
+            }
+            if (node.childNodes && depth < 10) {
+              node.childNodes.forEach(child => findAllText(child, depth + 1));
+            }
           }
+          findAllText(document.documentElement);
+          
+          // 4. Ищем iframe
+          const iframes = document.querySelectorAll("iframe");
+          console.log("iframes found:", iframes.length);
+          iframes.forEach((iframe, i) => {
+            try {
+              const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+              if (iframeDoc.body.innerHTML.includes("Regruha")) {
+                console.log("FOUND IN IFRAME", i, "!");
+              }
+            } catch(e) {
+              console.log("Cannot access iframe", i, "due to CORS");
+            }
+          });
+          
+          // 5. Ищем Shadow DOM
+          allElements.forEach(el => {
+            if (el.shadowRoot) {
+              if (el.shadowRoot.innerHTML.includes("Regruha")) {
+                console.log("FOUND IN SHADOW DOM of", el.tagName, el.className);
+              }
+            }
+          });
+          
+          // 6. Проверяем данные в элементах
+          allElements.forEach(el => {
+            const html = el.outerHTML;
+            if (html.includes("Regruha")) {
+              console.log("FOUND Regruha in element:", el.tagName, el.className);
+            }
+          });
         }
         
-        // Первый скан
-        setTimeout(scan, 100);
-        setTimeout(scan, 500);
-        setTimeout(scan, 1000);
+        deepScan();
+        setTimeout(deepScan, 500);
+        setTimeout(deepScan, 1500);
         
-        // Перехватываем fetch/XHR
-        const originalFetch = window.fetch;
-        window.fetch = function(...args) {
-          return originalFetch.apply(this, args).then(response => {
-            if (response.ok && response.headers.get('content-type')?.includes('application/json')) {
-              return response.clone().text().then(text => {
-                if (text.includes("Regruha")) {
-                  console.log("Found Regruha in fetch response!");
-                  const modified = text.replace(/Regruha/g, "Reeeeeeegruha");
-                  return new Response(modified, response);
-                }
-                return response;
-              });
-            }
-            return response;
-          });
-        };
-        
-        // MutationObserver
-        const observer = new MutationObserver((mutations) => {
-          mutations.forEach((mutation) => {
-            if (mutation.type === "childList" || mutation.type === "characterData") {
-              scan();
-            }
-          });
+        // Наблюдаем за изменениями
+        const observer = new MutationObserver(() => {
+          if (document.body.innerHTML.includes("Regruha")) {
+            console.log("!!! Regruha появился в DOM !!!");
+          }
         });
         
-        observer.observe(document.body, {
+        observer.observe(document.documentElement, {
           childList: true,
           subtree: true,
-          characterData: true
+          attributes: true,
+          attributeOldValue: true
         });
       })();
     </script>
