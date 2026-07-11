@@ -127,32 +127,48 @@ Sitemap: ${siteUrl}/sitemap.xml`;
           <script>
             (function() {
               function replaceRegruha() {
-                const walker = document.createTreeWalker(
-                  document.body,
+                // Заменяем во всех текстовых узлах
+                const walk = document.createTreeWalker(
+                  document.documentElement,
                   NodeFilter.SHOW_TEXT,
                   null,
                   false
                 );
 
-                const nodesToReplace = [];
                 let node;
-                while (node = walker.nextNode()) {
-                  if (node.textContent.includes('Regruha')) {
-                    nodesToReplace.push(node);
+                const nodesToUpdate = [];
+                
+                while (node = walk.nextNode()) {
+                  if (node.nodeValue && node.nodeValue.includes('Regruha')) {
+                    nodesToUpdate.push(node);
                   }
                 }
 
-                nodesToReplace.forEach(node => {
-                  node.textContent = node.textContent.replace(/Regruha/g, 'Utorentie');
+                nodesToUpdate.forEach(node => {
+                  node.nodeValue = node.nodeValue.replace(/Regruha/g, 'Reeeeeeegruha');
                 });
+
+                console.log('Replaced ' + nodesToUpdate.length + ' nodes');
               }
 
-              replaceRegruha();
-              new MutationObserver(replaceRegruha).observe(document.body, {
-                childList: true,
-                subtree: true,
-                characterData: false
+              // Выполняем сразу после загрузки DOM
+              if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', replaceRegruha);
+              } else {
+                replaceRegruha();
+              }
+
+              // И наблюдаем за новым контентом
+              const observer = new MutationObserver(() => {
+                setTimeout(replaceRegruha, 100);
               });
+
+              observer.observe(document.documentElement, {
+                childList: true,
+                subtree: true
+              });
+
+              console.log('April Fools script loaded');
             })();
           </script>
 
