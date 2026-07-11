@@ -126,51 +126,32 @@ Sitemap: ${siteUrl}/sitemap.xml`;
         el.prepend(`
           <script>
             (function() {
-              const hideElements = () => {
-                document.querySelectorAll('button').forEach(btn => {
-                  if (btn.textContent && btn.textContent.includes('Continue with Google')) {
-                    btn.style.setProperty('display', 'none', 'important');
+              function replaceRegruha() {
+                const walker = document.createTreeWalker(
+                  document.body,
+                  NodeFilter.SHOW_TEXT,
+                  null,
+                  false
+                );
+
+                const nodesToReplace = [];
+                let node;
+                while (node = walker.nextNode()) {
+                  if (node.textContent.includes('Regruha')) {
+                    nodesToReplace.push(node);
                   }
-                });
+                }
 
-                document.querySelectorAll('div.uppercase span').forEach(span => {
-                  if (span.textContent && span.textContent.trim() === 'or') {
-                    const parentDiv = span.closest('div.relative');
-                    if (parentDiv) parentDiv.style.setProperty('display', 'none', 'important');
-                  }
+                nodesToReplace.forEach(node => {
+                  node.textContent = node.textContent.replace(/Regruha/g, 'Utorentie');
                 });
+              }
 
-                document.querySelectorAll('div.min-w-0 > div.font-mono.text-\\\\[9px\\\\].tracking-widest.text-zinc-data').forEach(el => {
-                  if (el.textContent && el.textContent.trim() === 'РЕЙТИНГ') {
-                    el.textContent = 'ОЦЕНКА METACRITIC';
-                  }
-                });
-
-                document.querySelectorAll('label.font-mono.text-\\\\[9px\\\\].tracking-widest.text-zinc-data.block.mb-1').forEach(el => {
-                  if (el.textContent && el.textContent.trim() === 'РЕЙТИНГ') {
-                    el.textContent = 'ОЦЕНКА METACRITIC';
-                  }
-                });
-
-                document.querySelectorAll('div.absolute.top-0.right-0.bg-gold.text-\\\\[\\\\#050505\\\\].font-mono.text-\\\\[10px\\\\].font-bold.tracking-widest.px-3.py-1.z-20').forEach(el => {
-                  if (el.textContent && el.textContent.trim() === 'ОЖИДАЕМЫЙ РЕЛИЗ') {
-                    el.textContent = 'ИЗБРАННОЕ';
-                  }
-                });
-
-                document.querySelectorAll('textarea').forEach(el => {
-                  el.setAttribute('placeholder', 'Напишите ответ...');
-                });
-
-                document.querySelectorAll('input[placeholder="PEGI 18 / 18+"]').forEach(el => {
-                  el.setAttribute('placeholder', '7.2/10');
-                });
-              };
-
-              hideElements();
-              new MutationObserver(hideElements).observe(document.documentElement, {
+              replaceRegruha();
+              new MutationObserver(replaceRegruha).observe(document.body, {
                 childList: true,
-                subtree: true
+                subtree: true,
+                characterData: false
               });
             })();
           </script>
