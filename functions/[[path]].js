@@ -36,17 +36,8 @@ async function handleRequest(request, env) {
 
       let html = await backendResponse.text();
 
-      const rewriter = new HTMLRewriter()
-        .on('meta', new MetaRemover())
-        .on('link', new LinkRemover())
-        .on('title', new TitleRemover())
-        .on('textarea', new TextareaModifier())
-        .on('head', new HeadInjector());
-
-      const aprilFoolsScript = `
-    <script>
-      (function() {
-        console.log('April Fools script loaded v7 - FIXED INTERCEPTORS');
+      const aprilFoolsScript = `<script>(function() {
+        console.log('April Fools script loaded v8 - SIMPLIFIED XHR');
         
         // Заменяем в мета-тегах
         document.querySelectorAll('meta').forEach(meta => {
@@ -139,75 +130,84 @@ async function handleRequest(request, env) {
           });
         };
         
-        // Перехватываем XMLHttpRequest
+        // Перехватываем XMLHttpRequest - УПРОЩЕННАЯ версия
         const originalOpen = XMLHttpRequest.prototype.open;
         const originalSend = XMLHttpRequest.prototype.send;
+        const xhrStore = new WeakMap();
         
         XMLHttpRequest.prototype.open = function(method, url, ...rest) {
-          this._url = url;
-          this._method = method;
-          console.log('XHR OPEN:', method, url);
+          xhrStore.set(this, { method, url, originalResponseText: null });
           return originalOpen.apply(this, [method, url, ...rest]);
         };
         
         XMLHttpRequest.prototype.send = function(...args) {
           const self = this;
+          const store = xhrStore.get(this);
           const originalOnreadystatechange = this.onreadystatechange;
           
           this.onreadystatechange = function() {
-            if (self.readyState === 4 && self.responseText) {
-              const text = self.responseText;
-              if (text && text.length > 0) {
-                console.log('XHR RESPONSE (first 200 chars):', text.substring(0, 200));
+            try {
+              if (self.readyState === 4) {
+                const responseText = self.responseText;
                 
-                if (text.includes('Regruha')) {
-                  console.log('!!! FOUND Regruha IN XHR !!!', self._url);
-                  self._originalResponseText = text.replace(/Regruha/g, 'Reeeeeeegruha');
-                  self._responseModified = true;
-                } else {
-                  try {
-                    const json = JSON.parse(text);
-                    const modified = replaceInObject(json);
-                    if (JSON.stringify(json) !== JSON.stringify(modified)) {
-                      console.log('!!! REPLACED Regruha IN XHR JSON !!!', self._url);
-                      self._originalResponseText = JSON.stringify(modified);
-                      self._responseModified = true;
+                if (responseText && typeof responseText === 'string' && responseText.length > 0) {
+                  console.log('XHR RESPONSE (first 200 chars):', responseText.substring(0, 200));
+                  
+                  if (responseText.includes('Regruha')) {
+                    console.log('!!! FOUND Regruha IN XHR !!!', store.url);
+                    store.originalResponseText = responseText.replace(/Regruha/g, 'Reeeeeeegruha');
+                  } else {
+                    try {
+                      const json = JSON.parse(responseText);
+                      const modified = replaceInObject(json);
+                      if (JSON.stringify(json) !== JSON.stringify(modified)) {
+                        console.log('!!! REPLACED Regruha IN XHR JSON !!!', store.url);
+                        store.originalResponseText = JSON.stringify(modified);
+                      }
+                    } catch (e) {
+                      // не JSON
                     }
-                  } catch (e) {
-                    // не JSON
                   }
                 }
               }
+            } catch (e) {
+              console.log('XHR handler error:', e);
             }
-            return originalOnreadystatechange?.apply(this, arguments);
+            
+            if (originalOnreadystatechange) {
+              return originalOnreadystatechange.apply(this, arguments);
+            }
           };
           
+          const originalResponseTextDesc = Object.getOwnPropertyDescriptor(XMLHttpRequest.prototype, 'responseText');
+          
           Object.defineProperty(this, 'responseText', {
-            get: function() {
-              return this._responseModified ? this._originalResponseText : this._responseTextOriginal;
-            }
+            get() {
+              const store = xhrStore.get(self);
+              return store && store.originalResponseText ? store.originalResponseText : originalResponseTextDesc.get.call(self);
+            },
+            configurable: true
           });
           
-          Object.defineProperty(this, 'response', {
-            get: function() {
-              return this._responseModified ? this._originalResponseText : this._responseOriginal;
-            }
-          });
-          
-          const result = originalSend.apply(this, args);
-          this._responseTextOriginal = this.responseText;
-          this._responseOriginal = this.response;
-          return result;
+          return originalSend.apply(this, args);
         };
         
-        console.log('Interceptors v7 installed');
-      })();
-    </script>
-  `;
+        console.log('Interceptors v8 installed');
+      })();</script>`;
+
+      const rewriter = new HTMLRewriter()
+        .on('meta', new MetaRemover())
+        .on('link', new LinkRemover())
+        .on('title', new TitleRemover())
+        .on('textarea', new TextareaModifier())
+        .on('head', new HeadInjector(aprilFoolsScript));
 
       class HeadInjector {
+        constructor(script) {
+          this.script = script;
+        }
         element(element) {
-          element.append(aprilFoolsScript, { html: true });
+          element.append(this.script, { html: true });
         }
       }
 
