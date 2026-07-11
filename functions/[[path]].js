@@ -6,7 +6,6 @@ export async function onRequest(context) {
   if (country === "RU" || country === "BY") {
     const redirectUrl = new URL(request.url);
     redirectUrl.hostname = "regruha.vercel.app";
-
     return Response.redirect(redirectUrl.toString(), 302);
   }
 
@@ -48,6 +47,21 @@ export async function onRequest(context) {
     redirect: "follow",
   });
 
+  let html = await response.text();
+
+  // Логирование
+  console.log("=== BEFORE REPLACE ===");
+  console.log("Contains 'Regruha':", html.includes("Regruha"));
+  console.log("HTML length:", html.length);
+  console.log("First 500 chars:", html.substring(0, 500));
+
+  // Замена
+  html = html.replace(/Regruha/g, "Reeeeeeegruha");
+
+  console.log("=== AFTER REPLACE ===");
+  console.log("Contains 'Reeeeeeegruha':", html.includes("Reeeeeeegruha"));
+  console.log("First 500 chars:", html.substring(0, 500));
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebSite",
@@ -56,11 +70,6 @@ export async function onRequest(context) {
     url: `${siteUrl}/`,
     description,
   };
-
-  let html = await response.text();
-
-  // Замена "Regruha" на "Reeeeeeegruha" по всему HTML
-  html = html.replace(/Regruha/g, "Reeeeeeegruha");
 
   const rewritten = new HTMLRewriter()
     .on('link[rel="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"], link[rel="canonical"], meta[name="description"]', {
