@@ -47,21 +47,6 @@ export async function onRequest(context) {
     redirect: "follow",
   });
 
-  let html = await response.text();
-
-  // Логирование
-  console.log("=== BEFORE REPLACE ===");
-  console.log("Contains 'Regruha':", html.includes("Regruha"));
-  console.log("HTML length:", html.length);
-  console.log("First 500 chars:", html.substring(0, 500));
-
-  // Замена
-  html = html.replace(/Regruha/g, "Reeeeeeegruha");
-
-  console.log("=== AFTER REPLACE ===");
-  console.log("Contains 'Reeeeeeegruha':", html.includes("Reeeeeeegruha"));
-  console.log("First 500 chars:", html.substring(0, 500));
-
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebSite",
@@ -70,6 +55,49 @@ export async function onRequest(context) {
     url: `${siteUrl}/`,
     description,
   };
+
+  const aprilFoolsScript = `
+    <script>
+      (function() {
+        console.log("April Fools script loaded v2");
+        
+        function replaceText(node) {
+          if (node.nodeType === Node.TEXT_NODE) {
+            if (node.textContent.includes("Regruha")) {
+              node.textContent = node.textContent.replace(/Regruha/g, "Reeeeeeegruha");
+            }
+          } else {
+            Array.from(node.childNodes).forEach(replaceText);
+          }
+        }
+        
+        function processDOM() {
+          replaceText(document.body);
+        }
+        
+        // Первый запуск
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", processDOM);
+        } else {
+          processDOM();
+        }
+        
+        // MutationObserver для динамических изменений
+        const observer = new MutationObserver((mutations) => {
+          mutations.forEach((mutation) => {
+            if (mutation.type === "childList") {
+              mutation.addedNodes.forEach(replaceText);
+            }
+          });
+        });
+        
+        observer.observe(document.body, {
+          childList: true,
+          subtree: true
+        });
+      })();
+    </script>
+  `;
 
   const rewritten = new HTMLRewriter()
     .on('link[rel="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"], link[rel="canonical"], meta[name="description"]', {
@@ -149,14 +177,11 @@ export async function onRequest(context) {
           <meta name="twitter:description" content="${description}">
           <meta name="twitter:image" content="${image}">
           <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
+          ${aprilFoolsScript}
         `, { html: true });
       },
     })
-    .transform(new Response(html, {
-      status: response.status,
-      statusText: response.statusText,
-      headers: response.headers,
-    }));
+    .transform(response);
 
   const newHeaders = new Headers(rewritten.headers);
   newHeaders.delete("x-robots-tag");
