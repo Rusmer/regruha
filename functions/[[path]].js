@@ -59,41 +59,78 @@ export async function onRequest(context) {
   const aprilFoolsScript = `
     <script>
       (function() {
-        console.log("April Fools script loaded v2");
+        console.log("April Fools script loaded v3");
         
-        function replaceText(node) {
-          if (node.nodeType === Node.TEXT_NODE) {
-            if (node.textContent.includes("Regruha")) {
-              node.textContent = node.textContent.replace(/Regruha/g, "Reeeeeeegruha");
+        function replaceInElement(el) {
+          // Замена в текстовых узлах
+          for (let child of el.childNodes) {
+            if (child.nodeType === 3) { // TEXT_NODE
+              if (child.textContent.includes("Regruha")) {
+                console.log("Found text:", child.textContent);
+                child.textContent = child.textContent.replace(/Regruha/g, "Reeeeeeegruha");
+                console.log("Replaced to:", child.textContent);
+              }
+            } else if (child.nodeType === 1) { // ELEMENT_NODE
+              replaceInElement(child);
+              
+              // Замена в атрибутах
+              for (let attr of child.attributes || []) {
+                if (attr.value.includes("Regruha")) {
+                  console.log("Found in attr " + attr.name + ":", attr.value);
+                  attr.value = attr.value.replace(/Regruha/g, "Reeeeeeegruha");
+                }
+              }
             }
-          } else {
-            Array.from(node.childNodes).forEach(replaceText);
           }
         }
         
-        function processDOM() {
-          replaceText(document.body);
+        function scan() {
+          console.log("Scanning...");
+          const bodyHTML = document.body.innerHTML;
+          if (bodyHTML.includes("Regruha")) {
+            console.log("Text 'Regruha' found in HTML!");
+            replaceInElement(document.body);
+          } else {
+            console.log("No 'Regruha' found in current DOM");
+          }
         }
         
-        // Первый запуск
-        if (document.readyState === "loading") {
-          document.addEventListener("DOMContentLoaded", processDOM);
-        } else {
-          processDOM();
-        }
+        // Первый скан
+        setTimeout(scan, 100);
+        setTimeout(scan, 500);
+        setTimeout(scan, 1000);
         
-        // MutationObserver для динамических изменений
+        // Перехватываем fetch/XHR
+        const originalFetch = window.fetch;
+        window.fetch = function(...args) {
+          return originalFetch.apply(this, args).then(response => {
+            if (response.ok && response.headers.get('content-type')?.includes('application/json')) {
+              return response.clone().text().then(text => {
+                if (text.includes("Regruha")) {
+                  console.log("Found Regruha in fetch response!");
+                  const modified = text.replace(/Regruha/g, "Reeeeeeegruha");
+                  return new Response(modified, response);
+                }
+                return response;
+              });
+            }
+            return response;
+          });
+        };
+        
+        // MutationObserver
         const observer = new MutationObserver((mutations) => {
           mutations.forEach((mutation) => {
-            if (mutation.type === "childList") {
-              mutation.addedNodes.forEach(replaceText);
+            if (mutation.type === "childList" || mutation.type === "characterData") {
+              scan();
             }
           });
         });
         
         observer.observe(document.body, {
           childList: true,
-          subtree: true
+          subtree: true,
+          characterData: true
         });
       })();
     </script>
@@ -113,25 +150,6 @@ export async function onRequest(context) {
     .on("textarea", {
       element(el) {
         el.setAttribute("placeholder", "Напишите ответ...");
-      },
-    })
-    .on('div.min-w-0 > div.font-mono.text-\\[9px\\].tracking-widest.text-zinc-data', {
-      element(el) {
-        if (el.textContent?.trim() === "РЕЙТИНГ") {
-          el.setInnerContent("ОЦЕНКА METACRITIC");
-        }
-      },
-    })
-    .on('label.font-mono.text-\\[9px\\].tracking-widest.text-zinc-data.block.mb-1', {
-      element(el) {
-        if (el.textContent?.trim() === "РЕЙТИНГ") {
-          el.setInnerContent("ОЦЕНКА METACRITIC");
-        }
-      },
-    })
-    .on('input[placeholder="PEGI 18 / 18+"]', {
-      element(el) {
-        el.setAttribute("placeholder", "7.2/10");
       },
     })
     .on("head", {
