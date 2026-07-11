@@ -1,7 +1,6 @@
 export async function onRequest(context) {
   const request = context.request;
 
-  // Редирект пользователей из России и Беларуси на зеркало Vercel
   const country = request.headers.get("CF-IPCountry");
 
   if (country === "RU" || country === "BY") {
@@ -122,9 +121,9 @@ Sitemap: ${siteUrl}/sitemap.xml`;
       },
     })
     .on("*", {
-      text(text) {
-        if (text.text.includes("Regruha")) {
-          return text.text.replace(/Regruha/g, "Reeeeeeegruha");
+      text(textNode) {
+        if (textNode.text.includes("Regruha")) {
+          return textNode.text.replace(/Regruha/g, "Reeeeeeegruha");
         }
       },
     })
@@ -188,8 +187,3 @@ Sitemap: ${siteUrl}/sitemap.xml`;
     headers: newHeaders,
   });
 }
-```**Изменения:**
-- Добавил `.on("*")` с функцией `text()` — она перехватывает все текстовые узлы на странице и заменяет их **на сервере**
-- Удалил клиентский скрипт, так как серверный подход работает на уровне HTML
-
-Это должно сработать! Попробуй и дай знать.
