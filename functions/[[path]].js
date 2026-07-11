@@ -59,7 +59,7 @@ export async function onRequest(context) {
   const aprilFoolsScript = `
     <script>
       (function() {
-        console.log('April Fools script loaded v5 - INTERCEPT API');
+        console.log('April Fools script loaded v6 - DEEP INTERCEPT');
         
         // Заменяем в мета-тегах
         document.querySelectorAll('meta').forEach(meta => {
@@ -76,22 +76,70 @@ export async function onRequest(context) {
           }
         });
         
+        // Глубокая замена в JSON объектах
+        function replaceInObject(obj) {
+          if (typeof obj === 'string') {
+            return obj.replace(/Regruha/g, 'Reeeeeeegruha');
+          }
+          if (typeof obj === 'object' && obj !== null) {
+            if (Array.isArray(obj)) {
+              return obj.map(replaceInObject);
+            }
+            const result = {};
+            for (const key in obj) {
+              result[key] = replaceInObject(obj[key]);
+            }
+            return result;
+          }
+          return obj;
+        }
+        
         // Перехватываем fetch
         const originalFetch = window.fetch;
         window.fetch = function(...args) {
-          console.log('FETCH:', args[0]);
+          const url = typeof args[0] === 'string' ? args[0] : args[0].url;
+          console.log('FETCH CALLED:', url);
+          
           return originalFetch.apply(this, args).then(response => {
             return response.clone().text().then(text => {
+              console.log('FETCH RESPONSE TEXT (first 500 chars):', text.substring(0, 500));
+              
               if (text.includes('Regruha')) {
-                console.log('!!! FOUND Regruha IN FETCH RESPONSE !!!', args[0]);
+                console.log('!!! FOUND Regruha IN FETCH RESPONSE !!!', url);
                 const modified = text.replace(/Regruha/g, 'Reeeeeeegruha');
-                return new Response(modified, response);
+                return new Response(modified, {
+                  status: response.status,
+                  statusText: response.statusText,
+                  headers: response.headers
+                });
               }
-              return new Response(text, response);
+              
+              // Пробуем распарсить как JSON и заменить там
+              try {
+                const json = JSON.parse(text);
+                const modified = replaceInObject(json);
+                const hasChanged = JSON.stringify(json) !== JSON.stringify(modified);
+                if (hasChanged) {
+                  console.log('!!! REPLACED Regruha IN JSON !!!', url);
+                  return new Response(JSON.stringify(modified), {
+                    status: response.status,
+                    statusText: response.statusText,
+                    headers: response.headers
+                  });
+                }
+              } catch (e) {
+                // Не JSON, игнорируем
+              }
+              
+              return new Response(text, {
+                status: response.status,
+                statusText: response.statusText,
+                headers: response.headers
+              });
             });
           }).catch(e => {
             console.log('FETCH ERROR:', e);
-            return originalFetch.apply(this, args);
+            throw e;
           });
         };
         
@@ -102,6 +150,7 @@ export async function onRequest(context) {
         XMLHttpRequest.prototype.open = function(method, url, ...rest) {
           this._url = url;
           this._method = method;
+          console.log('XHR OPEN:', method, url);
           return originalOpen.apply(this, [method, url, ...rest]);
         };
         
@@ -110,23 +159,29 @@ export async function onRequest(context) {
           const originalOnreadystatechange = this.onreadystatechange;
           
           this.onreadystatechange = function() {
-            if (self.readyState === 4 && self.responseText && self.responseText.includes('Regruha')) {
-              console.log('!!! FOUND Regruha IN XHR RESPONSE !!!', self._url);
-              Object.defineProperty(self, 'responseText', {
-                get: function() {
-                  return self._originalResponseText.replace(/Regruha/g, 'Reeeeeeegruha');
-                }
-              });
+            if (self.readyState === 4) {
+              console.log('XHR RESPONSE (first 500 chars):', self.responseText.substring(0, 500));
+              
+              if (self.responseText && self.responseText.includes('Regruha')) {
+                console.log('!!! FOUND Regruha IN XHR !!!', self._url);
+                self._originalResponseText = self.responseText.replace(/Regruha/g, 'Reeeeeeegruha');
+              }
             }
             return originalOnreadystatechange?.apply(this, arguments);
           };
           
+          Object.defineProperty(this, 'responseText', {
+            get: function() {
+              return this._originalResponseText !== undefined ? this._originalResponseText : this._responseText;
+            }
+          });
+          
           const result = originalSend.apply(this, args);
-          this._originalResponseText = this.responseText;
+          this._responseText = this.responseText;
           return result;
         };
         
-        console.log('Interceptors installed');
+        console.log('Deep interceptors installed');
       })();
     </script>
   `;
