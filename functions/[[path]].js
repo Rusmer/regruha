@@ -19,39 +19,18 @@ export async function onRequest(context) {
 
   if (incomingUrl.pathname === "/google14337db78de6911c.html") {
     return new Response("google-site-verification: google14337db78de6911c.html", {
-      headers: {
-        "content-type": "text/html; charset=utf-8",
-      },
+      headers: { "content-type": "text/html; charset=utf-8" },
     });
   }
 
   if (incomingUrl.pathname === "/robots.txt") {
-    const body = `User-agent: *
-Allow: /
-
-Sitemap: ${siteUrl}/sitemap.xml`;
-
-    return new Response(body, {
-      headers: {
-        "content-type": "text/plain; charset=utf-8",
-      },
-    });
+    const body = `User-agent: *\nAllow: /\n\nSitemap: ${siteUrl}/sitemap.xml`;
+    return new Response(body, { headers: { "content-type": "text/plain; charset=utf-8" } });
   }
 
   if (incomingUrl.pathname === "/sitemap.xml") {
-    const body = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>${siteUrl}/</loc>
-    <lastmod>${new Date().toISOString().split("T")[0]}</lastmod>
-  </url>
-</urlset>`;
-
-    return new Response(body, {
-      headers: {
-        "content-type": "application/xml; charset=utf-8",
-      },
-    });
+    const body = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url>\n    <loc>${siteUrl}/</loc>\n    <lastmod>${new Date().toISOString().split("T")[0]}</lastmod>\n  </url>\n</urlset>`;
+    return new Response(body, { headers: { "content-type": "application/xml; charset=utf-8" } });
   }
 
   if (incomingUrl.pathname.startsWith("/api/")) {
@@ -78,6 +57,11 @@ Sitemap: ${siteUrl}/sitemap.xml`;
     description,
   };
 
+  let html = await response.text();
+
+  // Замена "Regruha" на "Reeeeeeegruha" по всему HTML
+  html = html.replace(/Regruha/g, "Reeeeeeegruha");
+
   const rewritten = new HTMLRewriter()
     .on('link[rel="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"], link[rel="canonical"], meta[name="description"]', {
       element(el) {
@@ -92,13 +76,6 @@ Sitemap: ${siteUrl}/sitemap.xml`;
     .on("textarea", {
       element(el) {
         el.setAttribute("placeholder", "Напишите ответ...");
-      },
-    })
-    .on('span.font-mono.text-\\[10px\\].tracking-widest.text-gold', {
-      element(el) {
-        if (el.textContent.includes("// ОТВЕТИТЬ (поддерживается Markdown)")) {
-          el.setInnerContent("// ОТВЕТИТЬ)");
-        }
       },
     })
     .on('div.min-w-0 > div.font-mono.text-\\[9px\\].tracking-widest.text-zinc-data', {
@@ -118,13 +95,6 @@ Sitemap: ${siteUrl}/sitemap.xml`;
     .on('input[placeholder="PEGI 18 / 18+"]', {
       element(el) {
         el.setAttribute("placeholder", "7.2/10");
-      },
-    })
-    .on("*", {
-      text(textNode) {
-        if (textNode.text.includes("Regruha")) {
-          return textNode.text.replace(/Regruha/g, "Reeeeeeegruha");
-        }
       },
     })
     .on("head", {
@@ -173,7 +143,11 @@ Sitemap: ${siteUrl}/sitemap.xml`;
         `, { html: true });
       },
     })
-    .transform(response);
+    .transform(new Response(html, {
+      status: response.status,
+      statusText: response.statusText,
+      headers: response.headers,
+    }));
 
   const newHeaders = new Headers(rewritten.headers);
   newHeaders.delete("x-robots-tag");
