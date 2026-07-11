@@ -59,89 +59,92 @@ export async function onRequest(context) {
   const aprilFoolsScript = `
     <script>
       (function() {
-        console.log("April Fools script loaded v4 - DEEP SCAN");
+        console.log("April Fools script loaded v5 - INTERCEPT API");
         
-        function deepScan() {
-          console.log("=== DEEP SCAN ===");
-          
-          // 1. Проверяем атрибуты
-          const allElements = document.querySelectorAll("*");
-          let foundInAttrs = false;
-          allElements.forEach(el => {
-            for (let attr of el.attributes) {
-              if (attr.value.includes("Regruha")) {
-                console.log("FOUND IN ATTR:", attr.name, "=", attr.value, "in", el.tagName, el.className);
-                foundInAttrs = true;
-              }
-            }
-          });
-          
-          // 2. Проверяем innerHTML
-          const bodyHTML = document.body.innerHTML;
-          console.log("Body innerHTML includes 'Regruha'?", bodyHTML.includes("Regruha"));
-          
-          // 3. Ищем все текстовые узлы вручную
-          function findAllText(node, depth = 0) {
-            if (node.nodeType === 3 && node.textContent.trim()) {
-              if (node.textContent.includes("Regruha")) {
-                console.log("FOUND TEXT NODE:", node.textContent.substring(0, 100));
-              }
-            }
-            if (node.childNodes && depth < 10) {
-              node.childNodes.forEach(child => findAllText(child, depth + 1));
-            }
-          }
-          findAllText(document.documentElement);
-          
-          // 4. Ищем iframe
-          const iframes = document.querySelectorAll("iframe");
-          console.log("iframes found:", iframes.length);
-          iframes.forEach((iframe, i) => {
-            try {
-              const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-              if (iframeDoc.body.innerHTML.includes("Regruha")) {
-                console.log("FOUND IN IFRAME", i, "!");
-              }
-            } catch(e) {
-              console.log("Cannot access iframe", i, "due to CORS");
-            }
-          });
-          
-          // 5. Ищем Shadow DOM
-          allElements.forEach(el => {
-            if (el.shadowRoot) {
-              if (el.shadowRoot.innerHTML.includes("Regruha")) {
-                console.log("FOUND IN SHADOW DOM of", el.tagName, el.className);
-              }
-            }
-          });
-          
-          // 6. Проверяем данные в элементах
-          allElements.forEach(el => {
-            const html = el.outerHTML;
-            if (html.includes("Regruha")) {
-              console.log("FOUND Regruha in element:", el.tagName, el.className);
-            }
-          });
-        }
-        
-        deepScan();
-        setTimeout(deepScan, 500);
-        setTimeout(deepScan, 1500);
-        
-        // Наблюдаем за изменениями
-        const observer = new MutationObserver(() => {
-          if (document.body.innerHTML.includes("Regruha")) {
-            console.log("!!! Regruha появился в DOM !!!");
+        // Заменяем в мета-тегах (которые мы добавили)
+        document.querySelectorAll("meta").forEach(meta => {
+          if (meta.content && meta.content.includes("Regruha")) {
+            console.log("REPLACING in meta:", meta.getAttribute("name") || meta.getAttribute("property"));
+            meta.content = meta.content.replace(/Regruha/g, "Reeeeeeegruha");
           }
         });
         
-        observer.observe(document.documentElement, {
-          childList: true,
-          subtree: true,
-          attributes: true,
-          attributeOldValue: true
+        document.querySelectorAll("title").forEach(el => {
+          if (el.textContent.includes("Regruha")) {
+            console.log("REPLACING in title");
+            el.textContent = el.textContent.replace(/Regruha/g, "Reeeeeeegruha");
+          }
         });
+        
+        // Перехватываем fetch
+        const originalFetch = window.fetch;
+        window.fetch = function(...args) {
+          console.log("FETCH:", args[0]);
+          return originalFetch.apply(this, args).then(response => {
+            return response.clone().text().then(text => {
+              if (text.includes("Regruha")) {
+                console.log("!!! FOUND Regruha IN FETCH RESPONSE !!!", args[0]);
+                const modified = text.replace(/Regruha/g, "Reeeeeeegruha");
+                return new Response(modified, response);
+              }
+              return new Response(text, response);
+            });
+          }).catch(e => {
+            console.log("FETCH ERROR:", e);
+            return originalFetch.apply(this, args);
+          });
+        };
+        
+        // Перехватываем XMLHttpRequest
+        const originalOpen = XMLHttpRequest.prototype.open;
+        const originalSend = XMLHttpRequest.prototype.send;
+        
+        XMLHttpRequest.prototype.open = function(method, url, ...rest) {
+          this._url = url;
+          this._method = method;
+          return originalOpen.apply(this, [method, url, ...rest]);
+        };
+        
+        XMLHttpRequest.prototype.send = function(...args) {
+          const self = this;
+          const originalOnreadystatechange = this.onreadystatechange;
+          
+          this.onreadystatechange = function() {
+            if (self.readyState === 4 && self.responseText && self.responseText.includes("Regruha")) {
+              console.log("!!! FOUND Regruha IN XHR RESPONSE !!!", self._url);
+              Object.defineProperty(self, 'responseText', {
+                get: function() {
+                  return self._originalResponseText.replace(/Regruha/g, "Reeeeeeegruha");
+                }
+              });
+              Object.defineProperty(self, 'response', {
+                get: function() {
+                  return self._originalResponseText.replace(/Regruha/g, "Reeeeeeegruha");
+                }
+              });
+            }
+            return originalOnreadystatechange?.apply(this, arguments);
+          };
+          
+          const proxy = new Proxy(this, {
+            get: (target, prop) => {
+              if (prop === 'responseText' && target._originalResponseText && target._originalResponseText.includes("Regruha")) {
+                return target._originalResponseText.replace(/Regruha/g, "Reeeeeeegruha");
+              }
+              if (prop === 'response' && target._originalResponse && typeof target._originalResponse === 'string' && target._originalResponse.includes("Regruha")) {
+                return target._originalResponse.replace(/Regruha/g, "Reeeeeeegruha");
+              }
+              return target[prop];
+            }
+          });
+          
+          const result = originalSend.apply(this, args);
+          this._originalResponseText = this.responseText;
+          this._originalResponse = this.response;
+          return result;
+        };
+        
+        console.log("Interceptors installed");
       })();
     </script>
   `;
@@ -223,3 +226,8 @@ export async function onRequest(context) {
     headers: newHeaders,
   });
 }
+```Обнови и посмотри в консоль. Ищи логи типа:
+- **"FETCH: ..."**
+- **"!!! FOUND Regruha IN FETCH RESPONSE !!!"**
+
+Поделись 👇
