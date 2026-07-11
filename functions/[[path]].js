@@ -59,38 +59,38 @@ export async function onRequest(context) {
   const aprilFoolsScript = `
     <script>
       (function() {
-        console.log("April Fools script loaded v5 - INTERCEPT API");
+        console.log('April Fools script loaded v5 - INTERCEPT API');
         
-        // Заменяем в мета-тегах (которые мы добавили)
-        document.querySelectorAll("meta").forEach(meta => {
-          if (meta.content && meta.content.includes("Regruha")) {
-            console.log("REPLACING in meta:", meta.getAttribute("name") || meta.getAttribute("property"));
-            meta.content = meta.content.replace(/Regruha/g, "Reeeeeeegruha");
+        // Заменяем в мета-тегах
+        document.querySelectorAll('meta').forEach(meta => {
+          if (meta.content && meta.content.includes('Regruha')) {
+            console.log('REPLACING in meta:', meta.getAttribute('name') || meta.getAttribute('property'));
+            meta.content = meta.content.replace(/Regruha/g, 'Reeeeeeegruha');
           }
         });
         
-        document.querySelectorAll("title").forEach(el => {
-          if (el.textContent.includes("Regruha")) {
-            console.log("REPLACING in title");
-            el.textContent = el.textContent.replace(/Regruha/g, "Reeeeeeegruha");
+        document.querySelectorAll('title').forEach(el => {
+          if (el.textContent.includes('Regruha')) {
+            console.log('REPLACING in title');
+            el.textContent = el.textContent.replace(/Regruha/g, 'Reeeeeeegruha');
           }
         });
         
         // Перехватываем fetch
         const originalFetch = window.fetch;
         window.fetch = function(...args) {
-          console.log("FETCH:", args[0]);
+          console.log('FETCH:', args[0]);
           return originalFetch.apply(this, args).then(response => {
             return response.clone().text().then(text => {
-              if (text.includes("Regruha")) {
-                console.log("!!! FOUND Regruha IN FETCH RESPONSE !!!", args[0]);
-                const modified = text.replace(/Regruha/g, "Reeeeeeegruha");
+              if (text.includes('Regruha')) {
+                console.log('!!! FOUND Regruha IN FETCH RESPONSE !!!', args[0]);
+                const modified = text.replace(/Regruha/g, 'Reeeeeeegruha');
                 return new Response(modified, response);
               }
               return new Response(text, response);
             });
           }).catch(e => {
-            console.log("FETCH ERROR:", e);
+            console.log('FETCH ERROR:', e);
             return originalFetch.apply(this, args);
           });
         };
@@ -110,41 +110,23 @@ export async function onRequest(context) {
           const originalOnreadystatechange = this.onreadystatechange;
           
           this.onreadystatechange = function() {
-            if (self.readyState === 4 && self.responseText && self.responseText.includes("Regruha")) {
-              console.log("!!! FOUND Regruha IN XHR RESPONSE !!!", self._url);
+            if (self.readyState === 4 && self.responseText && self.responseText.includes('Regruha')) {
+              console.log('!!! FOUND Regruha IN XHR RESPONSE !!!', self._url);
               Object.defineProperty(self, 'responseText', {
                 get: function() {
-                  return self._originalResponseText.replace(/Regruha/g, "Reeeeeeegruha");
-                }
-              });
-              Object.defineProperty(self, 'response', {
-                get: function() {
-                  return self._originalResponseText.replace(/Regruha/g, "Reeeeeeegruha");
+                  return self._originalResponseText.replace(/Regruha/g, 'Reeeeeeegruha');
                 }
               });
             }
             return originalOnreadystatechange?.apply(this, arguments);
           };
           
-          const proxy = new Proxy(this, {
-            get: (target, prop) => {
-              if (prop === 'responseText' && target._originalResponseText && target._originalResponseText.includes("Regruha")) {
-                return target._originalResponseText.replace(/Regruha/g, "Reeeeeeegruha");
-              }
-              if (prop === 'response' && target._originalResponse && typeof target._originalResponse === 'string' && target._originalResponse.includes("Regruha")) {
-                return target._originalResponse.replace(/Regruha/g, "Reeeeeeegruha");
-              }
-              return target[prop];
-            }
-          });
-          
           const result = originalSend.apply(this, args);
           this._originalResponseText = this.responseText;
-          this._originalResponse = this.response;
           return result;
         };
         
-        console.log("Interceptors installed");
+        console.log('Interceptors installed');
       })();
     </script>
   `;
@@ -226,8 +208,3 @@ export async function onRequest(context) {
     headers: newHeaders,
   });
 }
-```Обнови и посмотри в консоль. Ищи логи типа:
-- **"FETCH: ..."**
-- **"!!! FOUND Regruha IN FETCH RESPONSE !!!"**
-
-Поделись 👇
