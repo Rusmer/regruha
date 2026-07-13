@@ -165,7 +165,7 @@ Sitemap: ${siteUrl}/sitemap.xml`;
           </script>
 
           <style>
-            #base44-badge,
+            #lovable-badge-cta,
             #base44-edit-badge {
               display: none !important;
             }
