@@ -49,7 +49,7 @@ Sitemap: ${siteUrl}/sitemap.xml`;
   }
 
   const url = new URL(request.url);
-  url.hostname = "r-chat.base44.app";
+  url.hostname = "regruha-chat.lovable.app";
   url.searchParams.set("v", "2");
 
   const response = await fetch(url.toString(), {
