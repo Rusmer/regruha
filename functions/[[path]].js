@@ -166,7 +166,8 @@ Sitemap: ${siteUrl}/sitemap.xml`;
 
           <style>
             #lovable-badge-cta,
-            #lovable-badge-close {
+            #lovable-badge-close,
+            lovable-badge-divider {
               display: none !important;
             }
 
