@@ -117,12 +117,7 @@ Sitemap: ${siteUrl}/sitemap.xml`;
         el.prepend(`
           <script>
             (function() {
-              const hideElements = () => {
-                document.querySelectorAll('button').forEach(btn => {
-                  if (btn.textContent && btn.textContent.includes('Continue with Google')) {
-                    btn.style.setProperty('display', 'none', 'important');
-                  }
-                });
+
 
                 document.querySelectorAll('div.uppercase span').forEach(span => {
                   if (span.textContent && span.textContent.trim() === 'or') {
