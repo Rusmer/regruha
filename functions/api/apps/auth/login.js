@@ -1,10 +1,6 @@
 export async function onRequest(context) {
   const incoming = new URL(context.request.url);
 
-  const base44 = new URL(
-    "https://app.base44.com/api/apps/auth/login"
-  );
-
   const appId = incoming.searchParams.get("app_id");
 
   if (!appId) {
@@ -13,71 +9,21 @@ export async function onRequest(context) {
     });
   }
 
-  base44.searchParams.set("app_id", appId);
+  const target = new URL(
+    "https://app.base44.com/api/apps/auth/login"
+  );
 
-  base44.searchParams.set(
+  target.searchParams.set("app_id", appId);
+
+  // После успешного входа Base44 должен вернуть
+  // пользователя на наше зеркало.
+  target.searchParams.set(
     "from_url",
-    "https://regruha-terminal-core.base44.app/"
+    "https://regruha.pages.dev/"
   );
 
-  const response = await fetch(base44.toString(), {
-    redirect: "manual",
-  });
-
-  const location = response.headers.get("Location");
-
-  if (!location) {
-    return new Response(
-      "Base44 did not return OAuth redirect",
-      {
-        status: 502,
-      }
-    );
-  }
-
-  const google = new URL(location);
-
-  const stateRaw = google.searchParams.get("state");
-
-  if (!stateRaw) {
-    return new Response(
-      "OAuth state is missing",
-      {
-        status: 502,
-      }
-    );
-  }
-
-  // Диагностика
-  const debugHeaders = new Headers();
-
-  debugHeaders.set(
-    "content-type",
-    "text/plain; charset=utf-8"
-  );
-
-  const setCookies =
-    response.headers.get("set-cookie");
-
-  debugHeaders.set(
-    "x-base44-set-cookie",
-    setCookies || "NO SET-COOKIE"
-  );
-
-  return new Response(
-    [
-      "BASE44 LOCATION:",
-      location,
-      "",
-      "BASE44 SET-COOKIE:",
-      setCookies || "NO SET-COOKIE",
-      "",
-      "ORIGINAL STATE:",
-      stateRaw,
-    ].join("\n"),
-    {
-      status: 200,
-      headers: debugHeaders,
-    }
+  return Response.redirect(
+    target.toString(),
+    302
   );
 }
