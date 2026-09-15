@@ -118,14 +118,6 @@ Sitemap: ${siteUrl}/sitemap.xml`;
           <script>
             (function() {
 
-
-                document.querySelectorAll('div.uppercase span').forEach(span => {
-                  if (span.textContent && span.textContent.trim() === 'or') {
-                    const parentDiv = span.closest('div.relative');
-                    if (parentDiv) parentDiv.style.setProperty('display', 'none', 'important');
-                  }
-                });
-
                 document.querySelectorAll('div.min-w-0 > div.font-mono.text-\\\\[9px\\\\].tracking-widest.text-zinc-data').forEach(el => {
                   if (el.textContent && el.textContent.trim() === 'РЕЙТИНГ') {
                     el.textContent = 'ОЦЕНКА METACRITIC';
