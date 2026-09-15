@@ -40,64 +40,44 @@ export async function onRequest(context) {
   const stateRaw = google.searchParams.get("state");
 
   if (!stateRaw) {
-const debugHeaders = new Headers();
-
-debugHeaders.set("content-type", "text/plain; charset=utf-8");
-
-const setCookies = response.headers.get("set-cookie");
-
-debugHeaders.set(
-  "x-base44-set-cookie",
-  setCookies || "NO SET-COOKIE"
-);
-
-return new Response(
-  [
-    "BASE44 LOCATION:",
-    location,
-    "",
-    "BASE44 SET-COOKIE:",
-    setCookies || "NO SET-COOKIE",
-    "",
-    "ORIGINAL STATE:",
-    stateRaw,
-    "",
-    "MODIFIED STATE:",
-    JSON.stringify(state),
-  ].join("\n"),
-  {
-    status: 200,
-    headers: debugHeaders,
-  }
-);
-
-    );
-  }
-
-  try {
-    const state = JSON.parse(stateRaw);
-
-    state.domain =
-      "https://regruha-terminal-core.base44.app";
-
-    state.from_url =
-      "https://regruha-terminal-core.base44.app/";
-
-    google.searchParams.set(
-      "state",
-      JSON.stringify(state)
-    );
-  } catch (error) {
     return new Response(
-      "Failed to modify OAuth state",
+      "OAuth state is missing",
       {
-        status: 500,
+        status: 502,
       }
     );
   }
 
-  return Response.redirect(
-    google.toString(),
-    302
+  // Диагностика
+  const debugHeaders = new Headers();
+
+  debugHeaders.set(
+    "content-type",
+    "text/plain; charset=utf-8"
+  );
+
+  const setCookies =
+    response.headers.get("set-cookie");
+
+  debugHeaders.set(
+    "x-base44-set-cookie",
+    setCookies || "NO SET-COOKIE"
+  );
+
+  return new Response(
+    [
+      "BASE44 LOCATION:",
+      location,
+      "",
+      "BASE44 SET-COOKIE:",
+      setCookies || "NO SET-COOKIE",
+      "",
+      "ORIGINAL STATE:",
+      stateRaw,
+    ].join("\n"),
+    {
+      status: 200,
+      headers: debugHeaders,
+    }
   );
 }
