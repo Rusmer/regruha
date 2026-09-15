@@ -71,16 +71,6 @@ Sitemap: ${siteUrl}/sitemap.xml`;
   };
 
   const rewritten = new HTMLRewriter()
-    .on('link[rel="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"], link[rel="canonical"], meta[name="description"]', {
-      element(el) {
-        el.remove();
-      },
-    })
-    .on("title", {
-      element(el) {
-        el.remove();
-      },
-    })
     .on("textarea", {
       element(el) {
         el.setAttribute("placeholder", "Напишите ответ...");
@@ -157,17 +147,6 @@ Sitemap: ${siteUrl}/sitemap.xml`;
             #base44-badge,
             #base44-edit-badge {
               display: none !important;
-            }
-
-            button:has(svg path[fill="#4285F4"]),
-            div.uppercase:has(span) {
-              display: none !important;
-              opacity: 0 !important;
-              visibility: hidden !important;
-              pointer-events: none !important;
-              height: 0 !important;
-              margin: 0 !important;
-              padding: 0 !important;
             }
           </style>
 
