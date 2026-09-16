@@ -56,7 +56,7 @@ Sitemap: ${siteUrl}/sitemap.xml`;
 
   const url = new URL(request.url);
 
-  url.hostname = "regruha-terminal-core.base44.app";
+  url.hostname = "regruha.base44.app";
   url.searchParams.set("v", "2");
 
   const response = await fetch(url.toString(), {
