@@ -3,7 +3,7 @@ export async function onRequest(context) {
   const url = new URL(request.url);
 
   // Основной сервер Base44
-  url.hostname = "regruha-terminal-core.base44.app";
+  url.hostname = "regruha.base44.app";
 
   // Исправляем OAuth login:
   // Base44 не должен получать pages.dev как from_url
