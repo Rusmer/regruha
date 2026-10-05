@@ -134,15 +134,15 @@ Sitemap: ${siteUrl}/sitemap.xml`;
       } 
     )
     .on(
-      "div.min-w-0 > div.font-mono.text-\\[9px\\].tracking-\\[0\\.2em\\].text-zinc-data.mt-1\\.5",
+      "div.font-mono.text-\[9px\].tracking-\[0\.2em\].text-zinc-data.mt-1\.5",
       {
         element(el) {
           if (el.textContent?.trim() === "СЭКОНОМЛЕНО ВРЕМЕНИ") {
-           el.setInnerContent("СЭКОНОМЛЕНО ВРЕМЕНИ В ИГРЕ");
+            el.setInnerContent("СЭКОНОМЛЕНО ВРЕМЕНИ В ИГРЕ");
           }
         },
       }
-   )
+    )
     .on(
       "label.font-mono.text-\\[9px\\].tracking-widest.text-zinc-data.block.mb-1",
       {
