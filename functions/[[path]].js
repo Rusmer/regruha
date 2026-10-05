@@ -134,7 +134,7 @@ Sitemap: ${siteUrl}/sitemap.xml`;
       } 
     )
     .on(
-      "div.font-mono.text-\[9px\].tracking-\[0\.2em\].text-zinc-data.mt-1\.5",
+      'div[class*="text-[9px]"][class*="tracking-[0.2em]"][class*="text-zinc-data"]',
       {
         element(el) {
           if (el.textContent?.trim() === "СЭКОНОМЛЕНО ВРЕМЕНИ") {
@@ -143,6 +143,7 @@ Sitemap: ${siteUrl}/sitemap.xml`;
         },
       }
     )
+    
     .on(
       "label.font-mono.text-\\[9px\\].tracking-widest.text-zinc-data.block.mb-1",
       {
